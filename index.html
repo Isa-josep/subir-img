@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropzone File Upload</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="dropzone" id="dropzone">
+            <p>Arraste o soleccione imagenes para subir</p>
+            <input type="file" id="fileInput" accept="image/*" multiple>
+        </div>
+        <input type="text" id="fileDescription" placeholder="Enter file description">
+        <button id="uploadButton">Upload Files</button>
+        <button id="clearButton">Clear All</button>
+        <div id="fileList"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

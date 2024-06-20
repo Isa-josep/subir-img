@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Uploaded Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .image-item {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 20px;
+            width: 250px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .image-item:hover {
+            transform: scale(1.05);
+        }
+        .image-item img {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            width: 100%;
+            height: auto;
+            max-height: 400px; /* Ajustar según sea necesario */
+            object-fit: cover;
+        }
+        .image-details {
+            padding: 15px;
+        }
+        .location, .description, .fecha_hora {
+            font-size: 14px;
+            color: #333;
+        }
+        .location {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="image-container" id="imageContainer"></div>
+    <script>
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+            return date.toLocaleString('en-GB', options);
+        }
+
+        fetch('http://localhost:3000/files')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('imageContainer');
+            data.forEach(file => {
+                const item = document.createElement('div');
+                item.classList.add('image-item');
+                const img = document.createElement('img');
+                img.src = `http://localhost:3000${file.ruta}`;
+                const details = document.createElement('div');
+                details.classList.add('image-details');
+                const location = document.createElement('p');
+                location.classList.add('location');
+                if (file.ubicacion !== 'No especificada') {
+                    const coords = file.ubicacion.split(',');
+                    const lat = coords[0];
+                    const lon = coords[1];
+                    const mapLink = document.createElement('a');
+                    mapLink.href = `https://www.google.com/maps?q=${lat},${lon}`;
+                    mapLink.target = '_blank';
+                    mapLink.textContent = `Location: ${file.ubicacion}`;
+                    location.appendChild(mapLink);
+                } else {
+                    location.textContent = `Location: ${file.ubicacion}`;
+                }
+                const description = document.createElement('p');
+                description.classList.add('description');
+                description.textContent = `Description: ${file.descripcion}`;
+                const fechaHora = document.createElement('p');
+                fechaHora.classList.add('fecha_hora');
+                fechaHora.textContent = `Subido el: ${formatDate(file.fecha_hora)}`;
+
+                details.appendChild(location);
+                details.appendChild(description);
+                details.appendChild(fechaHora);
+                item.appendChild(img);
+                item.appendChild(details);
+                container.appendChild(item);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    </script>
+</body>
+</html>
